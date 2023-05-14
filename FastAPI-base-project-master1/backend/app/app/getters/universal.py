@@ -1,0 +1,16 @@
+from typing import Type
+
+from app.models.base_model import BaseModel
+from app.schemas.base import BaseSchema
+
+
+def transform(db_obj: BaseModel, target_schema: Type[BaseSchema], **kwargs) -> BaseSchema:
+    data = {}
+
+    for key in db_obj.__table__.columns.keys():
+        if key in target_schema.__fields__:
+            data[key] = getattr(db_obj, key)
+
+    data.update(kwargs)
+
+    return target_schema(**data)
