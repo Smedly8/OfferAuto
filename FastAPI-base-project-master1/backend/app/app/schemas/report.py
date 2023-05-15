@@ -1,6 +1,8 @@
 from app.schemas.base import BaseSchema
 
 # Shared properties
+
+
 class BaseReport(BaseSchema):
     description: str | None = None
     order_id: int
@@ -20,5 +22,5 @@ class UpdatingReport(BaseReport):
 class GettingReport(BaseReport):
     id: int | None = None
     created: int | None = None
+    img: str | None = None
     # user: GettingUser | None = None
-

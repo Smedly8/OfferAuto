@@ -12,4 +12,4 @@ class User(BaseModel):
     is_active = Column(Boolean(), default=True)
     is_superuser = Column(Boolean(), default=False)
     # country_id = Column(Integer, ForeignKey("country.id"), nullable=True)
-    orders = relationship("Order", back_populates="user")
+    orders = relationship("Order", back_populates="user", cascade='all, delete-orphan')

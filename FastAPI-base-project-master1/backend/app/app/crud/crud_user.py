@@ -14,7 +14,8 @@ class CRUDUser(CRUDBase[User, CreatingUser, UpdatingUser]):
 
     def create(self, db: Session, *, obj_in: CreatingUser | dict[str, Any], **kwargs) -> User:
         fields = self._adapt_fields(obj_in, **kwargs)
-        fields['email'] = fields['email'].lower() if isinstance(fields['email'], str) else fields['email']
+        fields['email'] = fields['email'].lower() if isinstance(
+            fields['email'], str) else fields['email']
         fields['hashed_password'] = get_password_hash(fields.pop('password'))
         return super(CRUDUser, self).create(db=db, obj_in=fields)
 
@@ -23,9 +24,11 @@ class CRUDUser(CRUDBase[User, CreatingUser, UpdatingUser]):
     ) -> User:
         fields = self._adapt_fields(obj_in, **kwargs)
         if 'email' in fields:
-            fields['email'] = fields['email'].lower() if isinstance(fields['email'], str) else fields['email']
+            fields['email'] = fields['email'].lower() if isinstance(
+                fields['email'], str) else fields['email']
         if 'password' in fields:
-            fields['hashed_password'] = get_password_hash(fields.pop('password'))
+            fields['hashed_password'] = get_password_hash(
+                fields.pop('password'))
         return super().update(db, db_obj=db_obj, obj_in=fields)
 
     def authenticate(self, db: Session, *, email: str, password: str) -> User | None:
@@ -39,8 +42,8 @@ class CRUDUser(CRUDBase[User, CreatingUser, UpdatingUser]):
     def exists(self, db: Session, *, data: ExistsRequest) -> ExistsResponse:
         return ExistsResponse(
             exists=db.query(self.model)
-                       .filter_by(**data.dict(exclude_unset=True, exclude_none=True))
-                       .first() is not None
+            .filter_by(**data.dict(exclude_unset=True, exclude_none=True))
+            .first() is not None
         )
 
 

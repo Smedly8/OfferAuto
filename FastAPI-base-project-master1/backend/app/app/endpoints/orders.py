@@ -15,16 +15,10 @@ router = APIRouter()
     response_model=schemas.response.ListOfEntityResponse[schemas.order.GettingOrder],
     responses=get_responses_description_by_codes([400])
 )
-@router.get(
-    '/orders/',
-    tags=["Заказы"],
-    name="Получить все Заказы",
-    response_model=schemas.response.ListOfEntityResponse[schemas.order.GettingOrder],
-    responses=get_responses_description_by_codes([400])
-)
 def get_all(
         db: Session = Depends(deps.get_db),
-        page: int | None = Query(None)
+        page: int | None = Query(None),
+        current_user: models.User = Depends(deps.get_current_active_superuser),
 ):
     data, paginator = crud.crud_order.order.get_page(db=db, page=page)
 
@@ -36,10 +30,35 @@ def get_all(
         meta=schemas.response.Meta(paginator=paginator)
     )
 
+
+@router.get(
+    '/orders/me/',
+    tags=["Заказы"],
+    name="Получить свои заказы",
+    response_model=schemas.response.ListOfEntityResponse[schemas.order.GettingOrder],
+    responses=get_responses_description_by_codes([400])
+)
+def get_all(
+        db: Session = Depends(deps.get_db),
+        page: int | None = Query(None),
+        current_user: models.User = Depends(deps.get_current_active_user),
+):
+    data, paginator = crud.crud_order.order.get_page(
+        db=db, page=page, user_id=current_user.id)
+
+    return schemas.response.ListOfEntityResponse(
+        data=[
+            getters.order.get_order(order=order)
+            for order in data
+        ],
+        meta=schemas.response.Meta(paginator=paginator)
+    )
+
+
 @router.post(
     '/cp/orders/',
     tags=["Панель Управления / Заказы"],
-    name="Создать заказ",   
+    name="Создать заказ",
     response_model=schemas.response.SingleEntityResponse[schemas.order.CreatingOrder],
     responses=get_responses_description_by_codes([401, 403, 400]),
 )
@@ -53,8 +72,6 @@ def create(
     return schemas.response.SingleEntityResponse(
         data=getters.order.get_order(order=order)
     )
-
-
 
 
 @router.delete(
@@ -73,6 +90,7 @@ def delete(
     crud.crud_order.order.remove_by_id(db=db, id=order_id)
 
     return schemas.response.OkResponse()
+
 
 @router.put(
     '/cp/orders/{order_id}/',
@@ -96,14 +114,3 @@ def edit(
     return schemas.response.SingleEntityResponse(
         data=getters.country.get_country(country=country)
     )
-
-
-
-
-
-
-
-
-
-
-

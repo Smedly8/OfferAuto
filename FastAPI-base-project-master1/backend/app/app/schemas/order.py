@@ -1,5 +1,6 @@
 from app.schemas.base import BaseSchema
 from app.schemas.user import GettingUser
+from app.schemas.report import GettingReport
 
 # Shared properties
 class BaseOrder(BaseSchema):
@@ -20,5 +21,6 @@ class UpdatingOrder(BaseOrder):
 
 class GettingOrder(BaseOrder):
     id: int | None = None
+    reports: list[GettingReport] = []
     # user: GettingUser | None = None
 
