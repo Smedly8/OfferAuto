@@ -106,7 +106,7 @@ def edit(
     '/cp/reports/{report_id}/image/',
     tags=["Панель Управления / Отчеты"],
     name="изменить аву",
-    response_model=schemas.response.SingleEntityResponse[schemas.UpdatingReport],
+    response_model=schemas.response.SingleEntityResponse[schemas.GettingReport],
     responses=get_responses_description_by_codes([401, 403, 400, 404])
 )
 def edit(
@@ -119,7 +119,7 @@ def edit(
     if report is None:
         raise UnfoundEntity(message="Страна не найдена", num=1)
 
-    report = crud.crud_report.report.change_content(
+    crud.crud_report.report.change_content(
         db=db,
         obj=report,
         content=image,

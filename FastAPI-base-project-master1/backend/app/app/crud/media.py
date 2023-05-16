@@ -50,7 +50,7 @@ class MixinContent:
 
         host = self.s3_client._endpoint.host
         bucket_name = self.s3_bucket_name
-        url_prefix = host + '/' + bucket_name + '/'
+        url_prefix = host + '/' + bucket_name + '/' 
         new_url = None
 
         if content is not None:
