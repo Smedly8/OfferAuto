@@ -143,7 +143,7 @@ class MixinAttachment(Generic[ModelType, ModelAttachmentType]):
             *,
             attachment_id: int
     ) -> ModelAttachmentType | None:
-        attachment = db.query(self.model) \
+        attachment = db.query(self.model_attachment) \
             .get(attachment_id)
         return attachment
 

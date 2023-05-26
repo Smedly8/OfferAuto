@@ -1,11 +1,13 @@
 from app.schemas.base import BaseSchema
-from app.schemas.user import GettingUser
 from app.schemas.report import GettingReport
 
 # Shared properties
 class BaseOrder(BaseSchema):
     name: str | None = None
     description: str | None = None
+    vin: str | None = None
+    model: str | None = None
+    year: str | None = None
     user_id: int 
 
 

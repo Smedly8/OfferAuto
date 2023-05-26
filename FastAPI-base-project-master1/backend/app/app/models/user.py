@@ -9,6 +9,8 @@ class User(BaseModel):
     full_name = Column(String, index=True)
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
+    vin = Column(String, unique=True, index=True, nullable=True)
+    phone = Column(String, unique=True, index=True, nullable=True)
     is_active = Column(Boolean(), default=True)
     is_superuser = Column(Boolean(), default=False)
     # country_id = Column(Integer, ForeignKey("country.id"), nullable=True)

@@ -82,7 +82,7 @@ def delete(
     '/cp/reports/{report_id}/',
     tags=["Панель Управления / Отчеты"],
     name="изменить отчет",
-    response_model=schemas.response.SingleEntityResponse[schemas.UpdatingReport],
+    response_model=schemas.response.SingleEntityResponse[schemas.GettingReport],
     responses=get_responses_description_by_codes([401, 403, 400, 404])
 )
 def edit(
@@ -100,6 +100,70 @@ def edit(
     return schemas.response.SingleEntityResponse(
         data=getters.report.get_report(report=report)
     )
+
+@router.put(
+    '/cp/reports/{report_id}/attachments/',
+    tags=["Панель Управления / Отчеты"],
+    name="добавить изображние",
+    response_model=schemas.response.SingleEntityResponse[schemas.GettingReport],
+    responses=get_responses_description_by_codes([400, 404])
+)
+def create(
+        db: Session = Depends(deps.get_db),
+        current_user: models.User = Depends(deps.get_current_active_superuser),
+        image: UploadFile | None = File(None),
+        report_id: int = Path(...)
+):
+
+    report = crud.crud_report.report.get(db=db, id=report_id)
+    if report is None:
+        raise UnfoundEntity(message="Страна не найдена", num=1)
+
+    crud.crud_report.report.add_attachment(
+        db=db,
+        attachment=image,
+        obj=report,
+        content_path='reports',
+        attachment_column='img',
+        attachment_foreign_key='report_id'    
+    )
+
+    return schemas.response.SingleEntityResponse(
+        data=getters.report.get_report(report=report)
+    )
+
+#################
+#--
+@router.delete(
+    '/cp/reports/attachments/{image_id}/',
+    tags=["Панель Управления / Отчеты"],
+    name="удалить изображние",
+    response_model=schemas.response.SingleEntityResponse[schemas.GettingReport],
+    responses=get_responses_description_by_codes([400, 404])
+)
+def delete(
+        db: Session = Depends(deps.get_db),
+        current_user: models.User = Depends(deps.get_current_active_superuser),
+        image_id: int = Path(...)
+):
+
+    image = crud.crud_report.report.get_attachment(db=db, attachment_id=image_id)
+    if image is None:
+        raise UnfoundEntity(message="Страа не найдена", num=1)
+
+    report = image.report
+
+    crud.crud_report.report.delete_attachment(
+        db=db,
+        attachment=image,
+    )
+
+    return schemas.response.SingleEntityResponse(
+        data=getters.report.get_report(report=report)
+    )
+
+#--
+#################
 
 
 @router.put(

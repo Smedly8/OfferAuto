@@ -23,4 +23,5 @@ class GettingReport(BaseReport):
     id: int | None = None
     created: int | None = None
     img: str | None = None
+    imgs: list
     # user: GettingUser | None = None

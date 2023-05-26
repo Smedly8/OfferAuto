@@ -19,8 +19,13 @@ def get_all(
         db: Session = Depends(deps.get_db),
         page: int | None = Query(None),
         current_user: models.User = Depends(deps.get_current_active_superuser),
+        user_id: int | None = Query(None),
 ):
-    data, paginator = crud.crud_order.order.get_page(db=db, page=page)
+    data, paginator = crud.crud_order.order.get_page(
+        db=db, 
+        page=page,
+        user_id=user_id,
+    )
 
     return schemas.response.ListOfEntityResponse(
         data=[

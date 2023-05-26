@@ -1,5 +1,5 @@
 from app.schemas.base import BaseSchema
-
+from app.schemas.order import GettingOrder
 
 # Shared properties
 class BaseUser(BaseSchema):
@@ -7,12 +7,15 @@ class BaseUser(BaseSchema):
     is_active: bool | None = True
     is_superuser: bool = False
     full_name: str | None = None
+    vin: str | None = None
+    phone: int | None = None
 
 
 # Properties to receive via API on creation
 class CreatingUser(BaseUser):
     email: str
     password: str
+    
 
 
 # Properties to receive via API on update
@@ -22,6 +25,7 @@ class UpdatingUser(BaseUser):
 
 class GettingUser(BaseUser):
     id: int | None = None
+    orders: list[GettingOrder] = []
 
 
 class LoginData(BaseSchema):

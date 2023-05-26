@@ -11,4 +11,5 @@ class Report(BaseModel):
     order_id = Column(Integer, ForeignKey("order.id"), nullable=False)
     img = Column(String)
     order = relationship("Order", back_populates="reports")
+    report_images = relationship("ReportImage", back_populates="report")
     # users = relationship("User", back_populates="country")
